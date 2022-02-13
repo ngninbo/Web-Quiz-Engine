@@ -38,6 +38,10 @@ public class Quiz {
     @Column(name = "answer")
     private List<Long> answer;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public Quiz() {
         super();
     }
@@ -94,19 +98,27 @@ public class Quiz {
         this.answer = answer;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Quiz)) return false;
         Quiz quiz = (Quiz) o;
-        return Objects.equals(getId(), quiz.getId()) && getTitle().equals(quiz.getTitle()) &&
-                getText().equals(quiz.getText()) && getOptions().equals(quiz.getOptions()) &&
-                Objects.equals(getAnswer(), quiz.getAnswer());
+        return Objects.equals(getId(), quiz.getId()) && Objects.equals(getTitle(), quiz.getTitle()) &&
+                Objects.equals(getText(), quiz.getText()) && Objects.equals(getOptions(), quiz.getOptions()) &&
+                Objects.equals(getAnswer(), quiz.getAnswer()) && Objects.equals(getUser(), quiz.getUser());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getTitle(), getText(), getOptions(), getAnswer());
+        return Objects.hash(getId(), getTitle(), getText(), getOptions(), getAnswer(), getUser());
     }
 
     @Override
@@ -117,6 +129,7 @@ public class Quiz {
                 ", text='" + text + '\'' +
                 ", options=" + options +
                 ", answer=" + answer +
+                ", user=" + user +
                 '}';
     }
 }

@@ -1,5 +1,7 @@
 package engine.service;
 
+import engine.dto.QuizDto;
+import engine.mapper.QuizMapper;
 import engine.model.Answer;
 import engine.model.Quiz;
 import engine.repository.QuizRepository;
@@ -14,10 +16,12 @@ import java.util.Optional;
 public class QuizServiceImpl implements QuizService {
 
     private final QuizRepository quizRepository;
+    private final QuizMapper quizMapper;
 
     @Autowired
-    public QuizServiceImpl(QuizRepository quizRepository) {
+    public QuizServiceImpl(QuizRepository quizRepository, QuizMapper quizMapper) {
         this.quizRepository = quizRepository;
+        this.quizMapper = quizMapper;
     }
 
     @Override
@@ -26,13 +30,18 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public Quiz save(Quiz quiz) {
-        return quizRepository.save(quiz);
+    public Optional<QuizDto> findById(Long id) {
+        return Optional.of(quizMapper.toQuizDto(quizRepository.findById(id).orElseThrow()));
     }
 
     @Override
-    public List<Quiz> findAll() {
-        return quizRepository.findAll();
+    public QuizDto save(Quiz quiz) {
+        return quizMapper.toQuizDto(quizRepository.save(quiz));
+    }
+
+    @Override
+    public List<QuizDto> findAll() {
+        return quizMapper.toQuizzesDtos(quizRepository.findAll());
     }
 
     @Override
@@ -48,5 +57,15 @@ public class QuizServiceImpl implements QuizService {
         }
 
         return Optional.empty();
+    }
+
+    @Override
+    public void deleteById(long quizId) {
+        quizRepository.deleteById(quizId);
+    }
+
+    @Override
+    public QuizDto update(Quiz quiz) {
+        return quizMapper.toQuizDto(quizRepository.save(quiz));
     }
 }

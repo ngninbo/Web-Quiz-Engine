@@ -1,5 +1,6 @@
 package engine.service;
 
+import engine.dto.QuizDto;
 import engine.model.Answer;
 import engine.model.Quiz;
 
@@ -9,7 +10,15 @@ import java.util.Optional;
 public interface QuizService {
 
     Optional<Quiz> findQuizById(Long id);
-    Quiz save(Quiz quiz);
-    List<Quiz> findAll();
+    Optional<QuizDto> findById(Long id);
+
+    QuizDto save(Quiz quiz);
+
+    List<QuizDto> findAll();
+
     Optional<Answer> solve(Long quizId, List<Long> answer);
+
+    void deleteById(long quizId);
+
+    QuizDto update(Quiz quiz);
 }
