@@ -5,8 +5,11 @@ import java.util.Objects;
 public class Answer {
 
     public static final String SUCCESS_FEEDBACK = "Congratulations, you're right!";
+
     public static final String FAILURE_FEEDBACK = "Wrong answer! Please, try again.";
+
     private boolean success;
+
     private String feedback;
 
     public Answer(boolean success, String feedback) {

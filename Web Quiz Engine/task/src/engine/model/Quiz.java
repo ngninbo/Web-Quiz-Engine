@@ -2,14 +2,20 @@ package engine.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "quiz")
+@SequenceGenerator(name = "seq", sequenceName = "quizSequence")
 public class Quiz {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
     private Long id;
 
     @NotNull(message = "Quiz must have a title")
@@ -18,25 +24,34 @@ public class Quiz {
 
     @NotNull(message = "Quiz must have a title")
     @NotEmpty(message = "Quiz title should not be empty")
+    @Column(name = "question")
     private String text;
 
     @NotNull(message = "The options must not be null")
     @Size(min = 2, message = "Quiz must contain at least two options")
+    @ElementCollection
+    @Column(name = "options")
     private List<String> options;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ElementCollection
+    @Column(name = "answer")
     private List<Long> answer;
 
     public Quiz() {
         super();
     }
 
-    public Quiz(Long id, String title, String text, List<String> options, List<Long> answer) {
-        this.id = id;
+    public Quiz(String title, String text, List<String> options, List<Long> answer) {
         this.title = title;
         this.text = text;
         this.options = options;
         this.answer = answer;
+    }
+
+    public Quiz(Long id, String title, String text, List<String> options, List<Long> answer) {
+        this(title, text, options, answer);
+        this.id = id;
     }
 
     public Long getId() {

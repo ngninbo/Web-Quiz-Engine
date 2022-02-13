@@ -22,7 +22,7 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public Optional<Quiz> findQuizById(Long id) {
-        return quizRepository.findBy(id);
+        return quizRepository.findById(id);
     }
 
     @Override
@@ -38,12 +38,12 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public Optional<Answer> solve(Long quizId, List<Long> answer) {
 
-        Optional<Quiz> optionalQuiz = quizRepository.findBy(quizId);
+        Optional<Quiz> optionalQuiz = quizRepository.findById(quizId);
 
         if (optionalQuiz.isPresent()) {
             Quiz quiz = optionalQuiz.get();
             return quiz.getAnswer() == null && answer.isEmpty() ||
-                    Objects.equals(answer, optionalQuiz.get().getAnswer()) ?
+                    Objects.equals(answer, quiz.getAnswer()) ?
                     Optional.of(Answer.success()) : Optional.of(Answer.failure());
         }
 
