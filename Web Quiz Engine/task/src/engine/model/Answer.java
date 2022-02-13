@@ -4,6 +4,8 @@ import java.util.Objects;
 
 public class Answer {
 
+    public static final String SUCCESS_FEEDBACK = "Congratulations, you're right!";
+    public static final String FAILURE_FEEDBACK = "Wrong answer! Please, try again.";
     private boolean success;
     private String feedback;
 
@@ -26,6 +28,14 @@ public class Answer {
 
     public void setFeedback(String feedback) {
         this.feedback = feedback;
+    }
+
+    public static Answer success() {
+        return new Answer(true, SUCCESS_FEEDBACK);
+    }
+
+    public static Answer failure() {
+        return new Answer(false, FAILURE_FEEDBACK);
     }
 
     @Override

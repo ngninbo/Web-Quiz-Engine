@@ -8,33 +8,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 public class QuizRepository {
     
-    private final Map<Long, Quiz> quizMap = new ConcurrentHashMap<>();
+    private final Map<Long, Quiz> storage = new ConcurrentHashMap<>();
+    private final AtomicLong idGenerator = new AtomicLong();
 
     public QuizRepository() {
         super();
     }
     
     public Optional<Quiz> findBy(Long id) {
-        return quizMap.isEmpty() || !quizMap.containsKey(id) ? Optional.empty() : Optional.of(quizMap.get(id));
 
+        Quiz quiz = storage.get(id);
+
+        return quiz == null ? Optional.empty() : Optional.of(quiz);
     }
     
     public Quiz save(Quiz quiz) {
-        quiz.setId(quizMap.size() + 1L);
-        quizMap.put(quiz.getId(), quiz);
+
+        long id = idGenerator.incrementAndGet();
+        quiz.setId(id);
+        storage.putIfAbsent(id, quiz);
+
         return quiz;
     }
 
     public List<Quiz> findAll() {
-        
-        if (quizMap.isEmpty()) {
-            return List.of();
-        } else {
-            return new ArrayList<>(quizMap.values());
-        }
+        return storage.isEmpty() ? List.of() : new ArrayList<>(storage.values());
     }
 }

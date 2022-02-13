@@ -1,13 +1,13 @@
 package engine.mapper;
 
-import engine.dto.QuizDto;
 import engine.model.Quiz;
+import engine.dto.QuizDto;
 import org.springframework.stereotype.Component;
 
 @Component
 public class QuizMapper {
 
-    public Quiz toQuiz(QuizDto quizDto) {
-        return new Quiz(quizDto.getTitle(), quizDto.getText(), quizDto.getOptions());
+    public QuizDto toQuizDto(Quiz quiz) {
+        return new QuizDto(quiz.getId(), quiz.getTitle(), quiz.getText(), quiz.getOptions());
     }
 }

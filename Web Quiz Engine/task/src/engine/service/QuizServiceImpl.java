@@ -1,25 +1,23 @@
 package engine.service;
 
-import engine.dto.QuizDto;
-import engine.mapper.QuizMapper;
+import engine.model.Answer;
 import engine.model.Quiz;
 import engine.repository.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class QuizServiceImpl implements QuizService {
 
     private final QuizRepository quizRepository;
-    private final QuizMapper quizMapper;
 
     @Autowired
-    public QuizServiceImpl(QuizRepository quizRepository, QuizMapper quizMapper) {
+    public QuizServiceImpl(QuizRepository quizRepository) {
         this.quizRepository = quizRepository;
-        this.quizMapper = quizMapper;
     }
 
     @Override
@@ -28,12 +26,27 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public Quiz save(QuizDto quizDto) {
-        return quizRepository.save(quizMapper.toQuiz(quizDto));
+    public Quiz save(Quiz quiz) {
+        return quizRepository.save(quiz);
     }
 
     @Override
     public List<Quiz> findAll() {
         return quizRepository.findAll();
+    }
+
+    @Override
+    public Optional<Answer> solve(Long quizId, List<Long> answer) {
+
+        Optional<Quiz> optionalQuiz = quizRepository.findBy(quizId);
+
+        if (optionalQuiz.isPresent()) {
+            Quiz quiz = optionalQuiz.get();
+            return quiz.getAnswer() == null && answer.isEmpty() ||
+                    Objects.equals(answer, optionalQuiz.get().getAnswer()) ?
+                    Optional.of(Answer.success()) : Optional.of(Answer.failure());
+        }
+
+        return Optional.empty();
     }
 }
