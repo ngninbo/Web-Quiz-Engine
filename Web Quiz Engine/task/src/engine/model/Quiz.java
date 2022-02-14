@@ -16,6 +16,7 @@ public class Quiz {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
+    @Column(name = "quiz_id")
     private Long id;
 
     @NotNull(message = "Quiz must have a title")
@@ -38,8 +39,9 @@ public class Quiz {
     @Column(name = "answer")
     private List<Long> answer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private User user;
 
     public Quiz() {

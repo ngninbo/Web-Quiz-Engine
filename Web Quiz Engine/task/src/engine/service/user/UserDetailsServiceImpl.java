@@ -1,4 +1,4 @@
-package engine.service;
+package engine.service.user;
 
 import engine.mapper.UserDetailsImpl;
 import engine.model.User;

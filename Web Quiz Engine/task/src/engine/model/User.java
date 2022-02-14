@@ -12,23 +12,21 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userSeq")
+    @Column(name = "user_id")
     private Long id;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "Email address is required. It must not be empty")
+    @NotBlank(message = "Email address is required. It must not be blank")
     @Email
-    @Pattern(regexp = ".+@.+\\..+")
+    @Pattern(regexp = ".+@.+\\..+", message = "Email address must be correct.")
     private String email;
 
-    @NotNull
-    @NotBlank
-    @Size(min = 5)
+    @NotNull(message = "Password is required. It must not be empty.")
+    @NotBlank(message = "Password is required. It must not be blank.")
+    @Size(min = 5, message = "Email address must contains at least five characters.")
     private String password;
 
     private String role;
-
-    @OneToMany(mappedBy = "user")
-    private Set<Quiz> quizzes;
 
     public User() {
         super();
@@ -71,27 +69,17 @@ public class User {
         this.role = role;
     }
 
-    public Set<Quiz> getQuizzes() {
-        return quizzes;
-    }
-
-    public void setQuizzes(Set<Quiz> quizzes) {
-        this.quizzes = quizzes;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof User)) return false;
         User user = (User) o;
-        return getId().equals(user.getId()) && getEmail().equals(user.getEmail()) &&
-                getPassword().equals(user.getPassword()) && getRole().equals(user.getRole()) &&
-                getQuizzes().equals(user.getQuizzes());
+        return Objects.equals(getId(), user.getId()) && Objects.equals(getEmail(), user.getEmail()) && Objects.equals(getPassword(), user.getPassword()) && Objects.equals(getRole(), user.getRole());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getEmail(), getPassword(), getRole(), getQuizzes());
+        return Objects.hash(getId(), getEmail(), getPassword(), getRole());
     }
 
     @Override
@@ -101,7 +89,6 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", role='" + role + '\'' +
-                ", quizzes=" + quizzes +
                 '}';
     }
 }
