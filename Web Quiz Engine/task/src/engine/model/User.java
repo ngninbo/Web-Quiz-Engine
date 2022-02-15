@@ -3,7 +3,6 @@ package engine.model;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "user")

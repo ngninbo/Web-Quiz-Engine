@@ -144,29 +144,17 @@ public class QuizController {
         }
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler({MethodArgumentNotValidException.class,
+            IllegalArgumentException.class,
+            InvalidDataAccessResourceUsageException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        return new ResponseEntity<>("not valid due to validation error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> handleException(Exception e) {
+        return new ResponseEntity<>(String.format("A %s occur: %s", e.getClass(), e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<String> handleNotFound(Exception exception) {
         return new ResponseEntity<>("Element not found: " + exception.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException exception) {
-        return new ResponseEntity<>("An illegal argument exception occurred: " + exception.getMessage(),
-                HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(InvalidDataAccessResourceUsageException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleJdbcSQLSyntaxErrorException(InvalidDataAccessResourceUsageException exception) {
-        return new ResponseEntity<>("An exception occurred while fetching data " + exception.getLocalizedMessage(),
-                HttpStatus.BAD_REQUEST);
     }
 }
