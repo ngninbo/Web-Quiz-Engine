@@ -68,6 +68,10 @@ public class User {
         this.role = role;
     }
 
+    public boolean compareEmail(String email) {
+        return Objects.equals(getEmail(), email);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -49,6 +49,7 @@ public class Quiz {
     }
 
     public Quiz(String title, String text, List<String> options, List<Long> answer) {
+        this();
         this.title = title;
         this.text = text;
         this.options = options;

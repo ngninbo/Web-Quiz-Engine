@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -38,7 +37,6 @@ public class QuizController {
     private final QuizService quizService;
     private final CompletionService completionService;
     private final UserService userService;
-    private final BiFunction<String, String, Boolean> isAuthor = String::equals;
 
     @Autowired
     public QuizController(QuizService quizService,
@@ -134,7 +132,7 @@ public class QuizController {
             if (quiz.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
-                if (!isAuthor.apply(quiz.get().getUser().getEmail(), userDetails.getUsername())) {
+                if (!quiz.get().getUser().compareEmail(userDetails.getUsername())) {
                     return new ResponseEntity<>(HttpStatus.FORBIDDEN);
                 } else {
                     quizService.deleteById(Long.parseLong(id));

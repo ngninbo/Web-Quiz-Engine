@@ -33,7 +33,7 @@ public class RegistrationController {
     public ResponseEntity<User> register(@Valid @RequestBody User user) {
         Optional<User> userFromRepo = userService.findByEmail(user.getEmail());
 
-        if (userFromRepo.isPresent() && user.getEmail().equals(userFromRepo.get().getEmail())) {
+        if (userFromRepo.isPresent() && user.compareEmail(userFromRepo.get().getEmail())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
             user.setPassword(encoder.encode(user.getPassword()));

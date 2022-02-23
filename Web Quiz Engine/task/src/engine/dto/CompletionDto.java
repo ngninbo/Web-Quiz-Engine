@@ -13,6 +13,7 @@ public class CompletionDto {
     }
 
     public CompletionDto(Long id, LocalDateTime completedAt) {
+        this();
         this.id = id;
         this.completedAt = completedAt;
     }

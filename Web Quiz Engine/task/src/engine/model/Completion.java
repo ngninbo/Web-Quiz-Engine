@@ -31,13 +31,18 @@ public class Completion {
     private Quiz quiz;
 
     @CreationTimestamp
-    private LocalDateTime completedAt = LocalDateTime.now();
+    private final LocalDateTime completedAt;
+
+    {
+        completedAt = LocalDateTime.now();
+    }
 
     public Completion() {
         super();
     }
 
     public Completion(User user, Quiz quiz) {
+        this();
         this.user = user;
         this.quiz = quiz;
     }
@@ -68,10 +73,6 @@ public class Completion {
 
     public LocalDateTime getCompletedAt() {
         return completedAt;
-    }
-
-    public void setCompletedAt(LocalDateTime completedAt) {
-        this.completedAt = completedAt;
     }
 
     @Override
