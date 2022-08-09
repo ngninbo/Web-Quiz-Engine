@@ -32,6 +32,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping(value = "/api/quizzes", produces = APPLICATION_JSON_VALUE)
 @Validated
+@SuppressWarnings({"unused"})
 public class QuizController {
 
     private final QuizService quizService;
@@ -53,9 +54,7 @@ public class QuizController {
         if (!userDetails.isEnabled()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-
-        Optional<QuizDto> quiz = quizService.findById(Long.parseLong(id));
-        return quiz.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+        return quizService.findById(Long.parseLong(id)).map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
@@ -104,7 +103,7 @@ public class QuizController {
                                                  @RequestParam(name = "sortBy", defaultValue = "id") String sortBy) {
         return userDetails.isEnabled() ?
                 new ResponseEntity<>(quizService.findAll(page, pageSize, sortBy)
-                        .map(EntityMapper::toQuizDto), new HttpHeaders(), HttpStatus.OK) :
+                        .map(EntityMapper::toDto), new HttpHeaders(), HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
@@ -116,7 +115,7 @@ public class QuizController {
         if (userDetails.isEnabled()) {
             User user = userService.findByEmail(userDetails.getUsername()).orElseThrow();
             return new ResponseEntity<>(completionService.findAllByUser(user, page, pageSize)
-                    .map(EntityMapper::completionDto), new HttpHeaders(), HttpStatus.OK);
+                    .map(EntityMapper::toDto), new HttpHeaders(), HttpStatus.OK);
         }
 
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

@@ -7,6 +7,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "user")
 @SequenceGenerator(name = "userSeq", sequenceName = "UserSeq")
+@SuppressWarnings({"unused"})
 public class User {
 
     @Id

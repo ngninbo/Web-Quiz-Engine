@@ -12,6 +12,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "completion")
 @SequenceGenerator(name = "compSeq", sequenceName = "CompSeq")
+@SuppressWarnings({"unused"})
 public class Completion {
 
     @Id

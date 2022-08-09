@@ -3,6 +3,7 @@ package engine.dto;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@SuppressWarnings({"unused"})
 public class CompletionDto {
 
     private Long id;

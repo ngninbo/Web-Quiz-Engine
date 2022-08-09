@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
+@SuppressWarnings({"unused"})
 public class CompletionServiceImpl implements CompletionService {
 
     private final CompletionRepository completionRepository;

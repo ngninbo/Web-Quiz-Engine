@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@SuppressWarnings({"unused"})
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;

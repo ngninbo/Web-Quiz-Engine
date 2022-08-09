@@ -2,10 +2,7 @@ package engine.service.quiz;
 
 import engine.dto.QuizDto;
 import engine.mapper.EntityMapper;
-import engine.model.Answer;
-import engine.model.Completion;
-import engine.model.Quiz;
-import engine.model.User;
+import engine.model.*;
 import engine.repository.CompletionRepository;
 import engine.repository.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +17,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@SuppressWarnings({"unused"})
 public class QuizServiceImpl implements QuizService {
 
     private final QuizRepository quizRepository;
@@ -39,12 +37,12 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public Optional<QuizDto> findById(Long id) {
-        return Optional.of(EntityMapper.toQuizDto(quizRepository.findById(id).orElseThrow()));
+        return Optional.of(EntityMapper.toDto(quizRepository.findById(id).orElseThrow()));
     }
 
     @Override
     public QuizDto save(Quiz quiz) {
-        return EntityMapper.toQuizDto(quizRepository.save(quiz));
+        return EntityMapper.toDto(quizRepository.save(quiz));
     }
 
     @Override
@@ -66,11 +64,10 @@ public class QuizServiceImpl implements QuizService {
             Quiz quiz = optionalQuiz.get();
 
             if (quiz.getAnswer() == null && answer.isEmpty() || Objects.equals(answer, quiz.getAnswer())) {
-                Completion completion = new Completion(user, quiz);
-                this.completionRepository.save(completion);
-                return Optional.of(Answer.success());
+                this.completionRepository.save(new Completion(user, quiz));
+                return Optional.of(Feedback.success());
             } else {
-                return Optional.of(Answer.failure());
+                return Optional.of(Feedback.failure());
             }
         }
 
@@ -84,6 +81,6 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public QuizDto update(Quiz quiz) {
-        return EntityMapper.toQuizDto(quizRepository.save(quiz));
+        return EntityMapper.toDto(quizRepository.save(quiz));
     }
 }

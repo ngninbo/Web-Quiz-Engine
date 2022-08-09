@@ -3,6 +3,7 @@ package engine.dto;
 import java.util.List;
 import java.util.Objects;
 
+@SuppressWarnings({"unused"})
 public class QuizDto {
 
     private Long id;
@@ -58,7 +59,8 @@ public class QuizDto {
         if (this == o) return true;
         if (!(o instanceof QuizDto)) return false;
         QuizDto quizDto = (QuizDto) o;
-        return Objects.equals(getId(), quizDto.getId()) && Objects.equals(getTitle(), quizDto.getTitle()) && Objects.equals(getText(), quizDto.getText()) && Objects.equals(getOptions(), quizDto.getOptions());
+        return Objects.equals(getId(), quizDto.getId()) && Objects.equals(getTitle(), quizDto.getTitle()) &&
+                Objects.equals(getText(), quizDto.getText()) && Objects.equals(getOptions(), quizDto.getOptions());
     }
 
     @Override

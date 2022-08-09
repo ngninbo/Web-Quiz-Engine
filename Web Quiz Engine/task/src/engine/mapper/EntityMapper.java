@@ -7,11 +7,21 @@ import engine.dto.QuizDto;
 
 public class EntityMapper {
 
-    public static QuizDto toQuizDto(Quiz quiz) {
+    /**
+     * Map Quiz entity to DTO
+     * @param quiz Quiz
+     * @return QuizDto
+     */
+    public static QuizDto toDto(Quiz quiz) {
         return new QuizDto(quiz.getId(), quiz.getTitle(), quiz.getText(), quiz.getOptions());
     }
 
-    public static CompletionDto completionDto(Completion completion) {
+    /**
+     * Map Completion entity to DTO
+     * @param completion Completion
+     * @return CompletionDto
+     */
+    public static CompletionDto toDto(Completion completion) {
         return new CompletionDto(completion.getQuiz().getId(), completion.getCompletedAt());
     }
 }

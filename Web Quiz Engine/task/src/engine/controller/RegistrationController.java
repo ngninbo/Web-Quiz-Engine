@@ -18,6 +18,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping(path = "/api")
 @Validated
+@SuppressWarnings({"unused"})
 public class RegistrationController {
 
     private final UserService userService;

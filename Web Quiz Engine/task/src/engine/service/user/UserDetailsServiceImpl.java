@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@SuppressWarnings({"unused"})
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserService userService;
