@@ -32,11 +32,7 @@ public class Completion {
     private Quiz quiz;
 
     @CreationTimestamp
-    private final LocalDateTime completedAt;
-
-    {
-        completedAt = LocalDateTime.now();
-    }
+    private final LocalDateTime completedAt = LocalDateTime.now();
 
     public Completion() {
         super();

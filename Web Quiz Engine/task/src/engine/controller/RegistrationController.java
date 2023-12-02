@@ -2,6 +2,11 @@ package engine.controller;
 
 import engine.model.User;
 import engine.service.user.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +23,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping(path = "/api")
 @Validated
+@Tag(name = "Registration service")
 @SuppressWarnings({"unused"})
 public class RegistrationController {
 
@@ -31,6 +37,12 @@ public class RegistrationController {
     }
 
     @PostMapping("/register")
+    @Operation(description = "Create new user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400", description = "Validation errors", content = @Content),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
+    })
     public ResponseEntity<User> register(@Valid @RequestBody User user) {
         Optional<User> userFromRepo = userService.findByEmail(user.getEmail());
 

@@ -2,6 +2,7 @@ package engine.controller;
 
 import engine.dto.CompletionDto;
 import engine.dto.QuizDto;
+import engine.dto.QuizSolveRequest;
 import engine.mapper.EntityMapper;
 import engine.model.Quiz;
 import engine.model.Answer;
@@ -9,6 +10,11 @@ import engine.model.User;
 import engine.service.completion.CompletionService;
 import engine.service.quiz.QuizService;
 import engine.service.user.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.data.domain.Page;
@@ -22,8 +28,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -33,6 +37,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping(value = "/api/quizzes", produces = APPLICATION_JSON_VALUE)
 @Validated
 @SuppressWarnings({"unused"})
+@Tag(name = "Quiz service", description = "Manage quizzes")
 public class QuizController {
 
     private final QuizService quizService;
@@ -49,6 +54,12 @@ public class QuizController {
     }
 
     @GetMapping(path = "/{id}")
+    @Operation(description = "Get quiz by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Element not found", content = @Content)
+    })
     public ResponseEntity<QuizDto> findById(@AuthenticationPrincipal UserDetails userDetails,
                                          @PathVariable String id) {
         if (!userDetails.isEnabled()) {
@@ -59,6 +70,13 @@ public class QuizController {
     }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
+    @Operation(description = "Add new quiz")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400", description = "Validation errors", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
+    })
     public ResponseEntity<QuizDto> addQuiz(@AuthenticationPrincipal UserDetails userDetails,
                                         @Valid @RequestBody Quiz quiz) {
         if (!userDetails.isEnabled()) {
@@ -71,6 +89,13 @@ public class QuizController {
     }
 
     @PutMapping(consumes = APPLICATION_JSON_VALUE)
+    @Operation(description = "Update quiz")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400", description = "Validation errors", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
+    })
     public ResponseEntity<QuizDto> updateQuiz(@AuthenticationPrincipal UserDetails userDetails,
                                            @Valid @RequestBody Quiz quiz) {
         if (!userDetails.isEnabled()) {
@@ -84,19 +109,31 @@ public class QuizController {
     }
 
     @PostMapping(path = "/{id}/solve")
+    @Operation(description = "Solve quiz by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400", description = "Validation errors", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
+    })
     public ResponseEntity<Answer> solve(@AuthenticationPrincipal UserDetails userDetails,
-                                        @PathVariable String id, @RequestBody Map<String, List<Long>> answer) {
+                                        @PathVariable String id, @RequestBody QuizSolveRequest request) {
         if (!userDetails.isEnabled()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         User user = userService.findByEmail(userDetails.getUsername()).orElseThrow();
-        Optional<Answer> optionalAnswer = quizService.solve(Long.parseLong(id), user, answer.get("answer"));
+        Optional<Answer> optionalAnswer = quizService.solve(Long.parseLong(id), user, request.getAnswer());
 
         return optionalAnswer.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping()
+    @Operation(description = "Get all quizzes")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    })
     public ResponseEntity<Page<QuizDto>> findAll(@AuthenticationPrincipal UserDetails userDetails,
                                                  @RequestParam(name = "page", defaultValue = "0") Integer page,
                                                  @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
@@ -108,6 +145,12 @@ public class QuizController {
     }
 
     @GetMapping("/completed")
+    @Operation(description = "Get all completed quizzes")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
+    })
     public ResponseEntity<Page<CompletionDto>> findAllCompleted(@AuthenticationPrincipal UserDetails userDetails,
                                                                 @RequestParam(defaultValue = "10") Integer pageSize,
                                                                 @RequestParam(defaultValue = "0") Integer page) {
@@ -122,6 +165,14 @@ public class QuizController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(description = "Delete quiz by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Delete successfully"),
+            @ApiResponse(responseCode = "400", description = "Validation errors", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Deletion of quiz for another user not allowed", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Quiz not found", content = @Content)
+    })
     public ResponseEntity<Quiz> deleteById(@AuthenticationPrincipal UserDetails userDetails,
                                            @PathVariable String id) {
         if (!userDetails.isEnabled()) {
